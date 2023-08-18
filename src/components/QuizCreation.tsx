@@ -64,6 +64,27 @@ function onSubmit (input: Input){
                             </FormItem>
                         )}
                         />
+                        <FormField
+                        control={form.control}
+                        name="amount"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Number of Questions</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Enter an amount..."
+                                {...field} 
+                                type='number'
+                                min={1}
+                                max={10}
+                                onChange = {e => {
+                                    form.setValue('amount', parseInt(e.target.value))
+                                }}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
                         <Button type="submit">Submit</Button>
                     </form>
                 </Form>
