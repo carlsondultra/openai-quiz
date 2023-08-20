@@ -1,3 +1,4 @@
+import MCQ from '@/components/MCQ';
 import { prisma } from '@/lib/db';
 import { getAuthSession } from '@/lib/nextauth';
 import { redirect } from 'next/navigation';
@@ -28,9 +29,10 @@ const MCQPage = async ({params: {gameId} }: Props) => {
             },
         },
     })
-  return (
-    <pre>{JSON.stringify(game, null, 2)}</pre>
-  )
+    if (!game || game.gameType !== 'mcq') {
+        return redirect('/quiz')
+    }
+    return <MCQ game={game} />
 }
 
 export default MCQPage
