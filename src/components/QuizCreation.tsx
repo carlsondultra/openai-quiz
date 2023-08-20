@@ -22,21 +22,18 @@ import { useMutation } from '@tanstack/react-query'
 import axios from "axios"
 import { useRouter } from 'next/navigation'
 
-type Props = {}
+type Props = {
+    topic: string;
+}
 
 //quiz creation schema is a zod object, then using zod to infer
 type Input = z.infer<typeof quizCreationSchema>
 
 const QuizCreation = (props: Props) => {
-    const router = useRouter()
+    const router = useRouter();
     const {mutate: getQuestions, isLoading} = useMutation({
         mutationFn: async({amount, topic, type}: Input) => {
-
-            const response = await axios.post('/api/game', {
-                amount,
-                topic,
-                type,
-            })
+            const response = await axios.post('/api/game', {amount,topic,type})
             return response.data
         }
     })
