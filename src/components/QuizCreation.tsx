@@ -18,8 +18,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { BookOpen, CopyCheck } from "../../node_modules/lucide-react"
 import { Separator } from './ui/separator'
-
-
+import { useMutation } from '@tanstack/react-query'
+import axios from "axios"
+import { useRouter } from 'next/navigation'
 
 type Props = {}
 
@@ -27,6 +28,19 @@ type Props = {}
 type Input = z.infer<typeof quizCreationSchema>
 
 const QuizCreation = (props: Props) => {
+    const router = useRouter()
+    const {mutate: getQuestions, isLoading} = useMutation({
+        mutationFn: async({amount, topic, type}: Input) => {
+
+            const response = await axios.post('/api/game', {
+                amount,
+                topic,
+                type,
+            })
+            return response.data
+        }
+    })
+
     const form = useForm<Input>({
         resolver: zodResolver(quizCreationSchema),
         defaultValues: {
@@ -37,7 +51,19 @@ const QuizCreation = (props: Props) => {
     })
 
 function onSubmit (input: Input){
-    alert(JSON.stringify(input,null,2))
+    getQuestions({
+        amount: input.amount,
+        topic: input.topic,
+        type: input.type,
+    }, {
+        onSuccess: ({gameId}) => {
+            if (form.getValues('type') == 'open_ended') {
+                router.push(`/play/open-ended/${gameId}`)
+            } else {
+                router.push(`/play/mcq/${gameId}`)
+            }
+        }
+    })
 }
 
 form.watch(); //re-renders component when state is changed
@@ -112,7 +138,7 @@ form.watch(); //re-renders component when state is changed
                                 <BookOpen className="w-4 h-4 mr-2" />Open Ended
                             </Button>
                         </div>
-                        <Button type="submit">Submit</Button>
+                        <Button disabled={isLoading} type="submit">Submit</Button>
                     </form>
                 </Form>
             </CardContent>
