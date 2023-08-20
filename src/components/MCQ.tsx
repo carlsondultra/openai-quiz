@@ -3,6 +3,7 @@ import { Game, Question } from '@prisma/client'
 import { Timer } from '../../node_modules/lucide-react'
 import React from 'react'
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
+import { Button } from './ui/button'
 
 type Props = {
     game: Game & {questions: Pick<Question, 'id'| 'options'| 'question'>[]}
@@ -27,7 +28,7 @@ const MCQ = ({game}: Props) => {
         <div className="flex flex-row justify-between">
             {/* topic */}
             <p>
-                <span className="text-slate-400">Topic</span>
+                <span className="text-slate-400 mr-2">Topic</span>
                 <span className="px-2 py-1 text-white rounded-lg bg-slate-800">{game.topic}</span>
             </p>
             <div className="flex self-start mt-3 text-slate-400">
@@ -52,7 +53,20 @@ const MCQ = ({game}: Props) => {
         </Card>
 
         <div className="flex flex-col items-center justify-center w-full mt-4">
-
+            {options.map((option, index) => {
+                return (
+                    <Button key={index}
+                        className="justify-start w-full py-8 mb-4"
+                    >
+                        <div className="flex items-center justify-start">
+                            <div className="p-2 px-3 mr-5 border rounded-md">
+                                {index + 1}
+                            </div>
+                            <div className="text-start">{option}</div>
+                        </div>
+                    </Button>
+                )
+            })}
         </div>
 
 
