@@ -1,6 +1,6 @@
 'use client'
 import { Game, Question } from '@prisma/client'
-import { ChevronRight, Timer } from '../../node_modules/lucide-react'
+import { ChevronRight, Loader2, Timer } from '../../node_modules/lucide-react'
 import React from 'react'
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
@@ -39,24 +39,47 @@ const MCQ = ({game}: Props) => {
     })
 
     const handleNext = React.useCallback(() => {
+        if (isChecking) return;
         checkAnswer(undefined, {
             onSuccess: ({isCorrect})=>{
                 if(isCorrect) {
                     toast({
                         title: "Correct!",
+                        description: "Correct answer",
                         variant: 'success',
                     })
                     setCorrectAnswers(prev => prev + 1);
                 } else {
                     toast({
                         title: "Incorrect!",
+                        description: "Incorrect answer",
                         variant: 'destructive',
                     })
                     setWrongAnswers((prev) => prev + 1);
                 }
             }
         })
-    }, [checkAnswer, toast])
+    }, [checkAnswer, toast, isChecking])
+
+    React.useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === '1') {
+                setSelectedChoice(0);
+            } else if (event.key === '2') {
+                setSelectedChoice(1)
+            } else if (event.key === '3') {
+                setSelectedChoice(2)
+            } else if (event.key === '4') {
+                setSelectedChoice(3)
+            } else if (event.key === 'Enter') {
+                handleNext();
+            }
+        }
+        document.addEventListener('keydown', handleKeyDown)
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown)
+        }
+    },[handleNext])
 
     const options = React.useMemo(() => {
         if (!currentQuestion) return []
@@ -117,6 +140,7 @@ const MCQ = ({game}: Props) => {
             })}
             <Button 
                 className="mt-2" 
+                disabled={isChecking}
                 onClick={() => {
                 handleNext()
                 }}
