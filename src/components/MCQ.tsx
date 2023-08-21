@@ -4,6 +4,7 @@ import { ChevronRight, Timer } from '../../node_modules/lucide-react'
 import React from 'react'
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
+import MCQCounter from './MCQCounter'
 
 type Props = {
     game: Game & {questions: Pick<Question, 'id'| 'options'| 'question'>[]}
@@ -36,7 +37,7 @@ const MCQ = ({game}: Props) => {
                 <Timer className="mr-2" />
                 <span>00:00</span>
             </div>
-            {/* <MCQCounter /> */}
+            <MCQCounter />
         </div>
         
         <Card className="w-full mt-4">
