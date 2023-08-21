@@ -5,6 +5,11 @@ import React from 'react'
 import { Card, CardDescription, CardHeader, CardTitle } from './ui/card'
 import { Button } from './ui/button'
 import MCQCounter from './MCQCounter'
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
+import { z } from 'zod'
+import { checkAnswerSchema } from '@/schemas/form/quiz'
+import { useToast } from './ui/use-toast'
 
 type Props = {
     game: Game & {questions: Pick<Question, 'id'| 'options'| 'question'>[]}
@@ -14,10 +19,44 @@ const MCQ = ({game}: Props) => {
 
     const [questionIndex, setQuestionIndex] = React.useState(0);
     const [selectedChoice, setSelectedChoice] = React.useState<number>(0)
+    const [correctAnswers, setCorrectAnswers] = React.useState<number>(0)
+    const [wrongAnswers, setWrongAnswers] = React.useState<number>(0)
+    const {toast} = useToast()
 
     const currentQuestion = React.useMemo(() => {
         return game.questions[questionIndex]
     }, [questionIndex, game.questions])
+
+    const {mutate: checkAnswer, isLoading: isChecking} = useMutation({
+        mutationFn: async () => {
+            const payload: z.infer<typeof checkAnswerSchema> = {
+                questionId: currentQuestion.id,
+                userAnswer: options[selectedChoice],
+            }
+            const response = await axios.post('/api/checkAnswer', payload)
+            return response.data
+        }
+    })
+
+    const handleNext = React.useCallback(() => {
+        checkAnswer(undefined, {
+            onSuccess: ({isCorrect})=>{
+                if(isCorrect) {
+                    toast({
+                        title: "Correct!",
+                        variant: 'success',
+                    })
+                    setCorrectAnswers(prev => prev + 1);
+                } else {
+                    toast({
+                        title: "Incorrect!",
+                        variant: 'destructive',
+                    })
+                    setWrongAnswers((prev) => prev + 1);
+                }
+            }
+        })
+    }, [checkAnswer, toast])
 
     const options = React.useMemo(() => {
         if (!currentQuestion) return []
@@ -76,7 +115,12 @@ const MCQ = ({game}: Props) => {
                     </Button>
                 )
             })}
-            <Button className="mt-2">
+            <Button 
+                className="mt-2" 
+                onClick={() => {
+                handleNext()
+                }}
+            >
                 Next <ChevronRight className="w-4 h-4 ml-2" />
             </Button>
         </div>
