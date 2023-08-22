@@ -21,6 +21,7 @@ const MCQ = ({game}: Props) => {
     const [selectedChoice, setSelectedChoice] = React.useState<number>(0)
     const [correctAnswers, setCorrectAnswers] = React.useState<number>(0)
     const [wrongAnswers, setWrongAnswers] = React.useState<number>(0)
+    const [hasEnded, setHasEnded] = React.useState<boolean>(false)
     const {toast} = useToast()
 
     const currentQuestion = React.useMemo(() => {
@@ -57,9 +58,14 @@ const MCQ = ({game}: Props) => {
                     })
                     setWrongAnswers((prev) => prev + 1);
                 }
+                if (questionIndex === game.questions.length -1) {
+                    setHasEnded(true)
+                    return;
+                }
+                setQuestionIndex((prev) => prev +1)
             }
         })
-    }, [checkAnswer, toast, isChecking])
+    }, [checkAnswer, toast, isChecking, questionIndex, game.questions.length])
 
     React.useEffect(() => {
         const handleKeyDown = (event: KeyboardEvent) => {
@@ -101,7 +107,7 @@ const MCQ = ({game}: Props) => {
                     <span>00:00</span>
                 </div>
             </div>
-            <MCQCounter correctAnswers={2} wrongAnswers={4} />
+            <MCQCounter correctAnswers={correctAnswers} wrongAnswers={wrongAnswers} />
         </div>
         
         <Card className="w-full mt-4">
