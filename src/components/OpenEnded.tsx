@@ -27,6 +27,17 @@ const OpenEnded = ({game}: Props) => {
         return game.questions[questionIndex]
     }, [questionIndex, game.questions])
 
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            if (!hasEnded) {
+                setNow(new Date())
+            }
+        }, 1000)
+        return () => {
+            clearInterval(interval)
+        }
+    }, [hasEnded])
+
     const {mutate: checkAnswer, isLoading: isChecking} = useMutation({
         mutationFn: async () => {
             const payload: z.infer<typeof checkAnswerSchema> = {
