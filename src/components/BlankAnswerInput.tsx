@@ -30,7 +30,19 @@ const BlankAnswerInput = ({answer}: Props) => {
 
   return (
     <div className="flex justify-start w-full mt-4">
-        <h1 className="text-xl font-semibold">{answer}</h1>
+        <h1 className="text-xl font-semibold">
+          {
+          answerWithBlanks.split(BLANKS).map((part, index) => {
+            return(
+              <>
+              {part}
+              <input id='user-blank-input'
+                className="text-center border-b-2 border-black dark:border-white w-28 focus:border-2 focus:border-b-4 focus:outline-none"
+              />
+              </>
+            )
+          })}
+        </h1>
     </div>
   )
 }
