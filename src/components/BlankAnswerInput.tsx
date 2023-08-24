@@ -5,6 +5,8 @@ type Props = {
     answer: string
 }
 
+const BLANKS = '_____'
+
 const BlankAnswerInput = ({answer}: Props) => {
   //dont need to re-calculate every time
   const keywords = React.useMemo(() => {
@@ -14,7 +16,18 @@ const BlankAnswerInput = ({answer}: Props) => {
         return_changed_case: false,
         remove_duplicates: false,
       })
+      const shuffled = words.sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, 2);
   }, [answer])
+
+  //looking through keywords, replacing them with blanks
+  const answerWithBlanks = React.useMemo(() => {
+    const answerWithBlanks = keywords.reduce((acc, keyword) =>{
+      return acc.replace(keyword, BLANKS)
+    }, answer)
+    return answerWithBlanks
+  }, [keywords, answer])
+
   return (
     <div className="flex justify-start w-full mt-4">
         <h1 className="text-xl font-semibold">{answer}</h1>
