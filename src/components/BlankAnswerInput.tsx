@@ -36,9 +36,11 @@ const BlankAnswerInput = ({answer}: Props) => {
             return(
               <>
               {part}
-              <input id='user-blank-input'
+              {index === answerWithBlanks.split(BLANKS).length - 1 ? null : (
+                <input id='user-blank-input'
                 className="text-center border-b-2 border-black dark:border-white w-28 focus:border-2 focus:border-b-4 focus:outline-none"
               />
+              )}
               </>
             )
           })}
