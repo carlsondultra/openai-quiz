@@ -3,11 +3,12 @@ import keyword_extractor from 'keyword-extractor'
 
 type Props = {
     answer: string
+    setBlankAnswer: React.Dispatch<React.SetStateAction<string>>
 }
 
 const BLANKS = '_____'
 
-const BlankAnswerInput = ({answer}: Props) => {
+const BlankAnswerInput = ({answer, setBlankAnswer}: Props) => {
   //dont need to re-calculate every time
   const keywords = React.useMemo(() => {
       const words = keyword_extractor.extract(answer, {
@@ -25,8 +26,9 @@ const BlankAnswerInput = ({answer}: Props) => {
     const answerWithBlanks = keywords.reduce((acc, keyword) =>{
       return acc.replace(keyword, BLANKS)
     }, answer)
+    setBlankAnswer(answerWithBlanks)
     return answerWithBlanks
-  }, [keywords, answer])
+  }, [keywords, answer, setBlankAnswer])
 
   return (
     <div className="flex justify-start w-full mt-4">
