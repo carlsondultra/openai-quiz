@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation'
 import React from 'react'
 import Link from 'next/link'
 import ResultsCard from '@/components/statistics/ResultsCard'
+import AccuracyCard from '@/components/statistics/AccuracyCard'
 
 type Props = {
     params: {
@@ -40,6 +41,7 @@ const StatisticsPage = async ({params: {gameId}}: Props) => {
 
                 <div className="grid gap-4 mt-4 md:grid-cols-7">
                     <ResultsCard accuracy={80}/>
+                    <AccuracyCard accuracy={80}/>
                 </div>
             </div>
         </>
