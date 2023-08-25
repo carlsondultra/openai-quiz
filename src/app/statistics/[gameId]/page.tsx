@@ -5,6 +5,7 @@ import { LucideLayoutDashboard } from '../../../../node_modules/lucide-react'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import Link from 'next/link'
+import ResultsCard from '@/components/statistics/ResultsCard'
 
 type Props = {
     params: {
@@ -35,6 +36,10 @@ const StatisticsPage = async ({params: {gameId}}: Props) => {
                             Back to Dashboard
                         </Link>
                     </div>
+                </div>
+
+                <div className="grid gap-4 mt-4 md:grid-cols-7">
+                    <ResultsCard accuracy={80}/>
                 </div>
             </div>
         </>
