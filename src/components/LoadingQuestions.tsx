@@ -3,7 +3,9 @@ import Image from 'next/image'
 import React from 'react'
 import { Progress } from './ui/progress'
 
-type Props = {}
+type Props = {
+    finished: boolean
+}
 
 const loadingTexts = [
     "Gathering a Galaxy of Questions...",
@@ -13,7 +15,7 @@ const loadingTexts = [
     "Initializing the Quest for Knowledge...",
 ]
 
-const LoadingQuestions = (props: Props) => {
+const LoadingQuestions = ({finished}: Props) => {
     const [progress, setProgress] = React.useState(0)
     const [loadingText, setLoadingText] = React.useState(loadingTexts[0])
     React.useEffect(() =>{
@@ -26,7 +28,8 @@ const LoadingQuestions = (props: Props) => {
 
     React.useEffect(() => {
         const interval = setInterval(() => {
-            setProgress(prev => {
+            setProgress((prev) => {
+                if (finished) return 100
                 if(prev === 100){
                     return 0
                 }
@@ -37,7 +40,7 @@ const LoadingQuestions = (props: Props) => {
             })
         }, 100)
         return () => clearInterval(interval);
-    })
+    }, [finished])
 
 
   return (

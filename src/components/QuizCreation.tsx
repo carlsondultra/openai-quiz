@@ -21,6 +21,7 @@ import { Separator } from './ui/separator'
 import { useMutation } from '@tanstack/react-query'
 import axios from "axios"
 import { useRouter } from 'next/navigation'
+import LoadingQuestions from './LoadingQuestions'
 
 type Props = {
     topic: string;
@@ -31,6 +32,8 @@ type Input = z.infer<typeof quizCreationSchema>
 
 const QuizCreation = (props: Props) => {
     const router = useRouter();
+    const [showLoader, setShowLoader] = React.useState(false)
+    const [finished, setFinished] = React.useState(false)
     const {mutate: getQuestions, isLoading} = useMutation({
         mutationFn: async({amount, topic, type}: Input) => {
             const response = await axios.post('/api/game', {amount,topic,type})
@@ -48,22 +51,32 @@ const QuizCreation = (props: Props) => {
     })
 
 function onSubmit (input: Input){
+    setShowLoader(true)
     getQuestions({
         amount: input.amount,
         topic: input.topic,
         type: input.type,
     }, {
         onSuccess: ({gameId}) => {
-            if (form.getValues('type') == 'open_ended') {
-                router.push(`/play/open-ended/${gameId}`)
-            } else {
-                router.push(`/play/mcq/${gameId}`)
-            }
+            setFinished(true)
+            setTimeout(() => {
+                if (form.getValues('type') == 'open_ended') {
+                    router.push(`/play/open-ended/${gameId}`)
+                } else {
+                    router.push(`/play/mcq/${gameId}`)
+                }
+            }, 1000)
+        },
+        onError: () => {
+            setShowLoader(false)
         }
     })
 }
 
 form.watch(); //re-renders component when state is changed
+if (showLoader) {
+    return <LoadingQuestions finished={finished}/>
+}
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
