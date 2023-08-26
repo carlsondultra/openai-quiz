@@ -8,6 +8,7 @@ import Link from 'next/link'
 import ResultsCard from '@/components/statistics/ResultsCard'
 import AccuracyCard from '@/components/statistics/AccuracyCard'
 import TimeTakenCard from '@/components/statistics/TimeTakenCard'
+import QuestionList from '@/components/statistics/QuestionList'
 
 type Props = {
     params: {
@@ -67,6 +68,7 @@ const StatisticsPage = async ({params: {gameId}}: Props) => {
                     <AccuracyCard accuracy={accuracy}/>
                     <TimeTakenCard timeEnded={new Date()} timeStarted ={game.timeStarted} />
                 </div>
+                <QuestionList questions={game.questions}/>
             </div>
         </>
     )
