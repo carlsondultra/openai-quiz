@@ -14,7 +14,7 @@ GOOGLE_CLIENT_SECRET=
 OPENAI_API_KEY=
 API_URL=
 ```
-Finally, to run the development server,
+Finally, to run the development server:
 ```
 npm run dev
 ```
